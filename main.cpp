@@ -11,22 +11,21 @@
 #include <sstream>
 #include <algorithm>
 
-#include "./chunk.hpp"
+#include "./chunk.cpp"
 #include "./debug.cpp"
 
 int main(int argc, char const *argv[]) {
-    std::stringstream buffer;
-    // coutbuf = std::cout.rdbuf(buffer.rdbuf());
-    std::streambuf * coutbuf = capture_stdout(buffer) ;
-
     Chunk chunk;
-    chunk.push_back(OP_RETURN);
+    uint8_t constant = addConstant(chunk, 1.2) ;
+    writeChunk(chunk, OP_CONSTANT);
+    writeChunk(chunk, constant);
+
+    constant = addConstant(chunk, 65.7) ;
+    writeChunk(chunk, OP_CONSTANT);
+    writeChunk(chunk, constant);
+    
+    writeChunk(chunk, OP_RETURN);
     disassembleChunk(chunk, "test chunk");
     
-    reset_stdout(coutbuf);
-    std::cout << "---------" << std::endl;
-    std::cout << buffer.str();
-    std::cout << "---------" << std::endl;
-
     return 0;
 }

@@ -6,11 +6,17 @@
 #include <cstdint>
 #include <vector>
 
+#include "./value.hpp" 
+
 typedef enum {
+    OP_CONSTANT,
     OP_RETURN,
 } OpCode; // operation codes
 
 
-typedef std::vector<OpCode> Chunk;
+typedef struct {
+    std::vector<uint8_t> code;
+    ValueArray constants;
+} Chunk;
 
 #endif

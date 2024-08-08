@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string>
 #include <iomanip>
+#include <iostream>
 
 #include "./debug.hpp"
 
@@ -15,19 +16,23 @@ void reset_stdout(std::streambuf * coutbuf) {
     std::cout.rdbuf(coutbuf);
 }
 
-void disassembleChunk(Chunk& chunk, const char* name) {  
+void disassembleChunk(const Chunk& chunk, const char* name) {  
     std::cout << "== " << name << " ==" << std::endl;
 
-    for (int offset = 0; offset < chunk.size();) {
+    for (int offset = 0; offset < chunk.code.size();) {
         // offset is incremented by disassembleInstruction() because instructions can have different sizes.
         offset = disassembleInstruction(chunk, offset);
     }
 }
   
-int disassembleInstruction(Chunk& chunk, int offset) {
-    std::cout <<  std::setfill('0') << std::setw(4) << offset << " " ;
-    OpCode instruction = chunk[offset];
+int disassembleInstruction(const Chunk& chunk, int offset) {
+    // std::cout <<  std::setfill('0') << std::setw(4) << offset << " " ;
+    printf("%04d", offset);
+
+    uint8_t instruction = chunk.code[offset];
     switch (instruction) {
+        case OP_CONSTANT:
+            return constantInstruction("OP_CONSTANT", chunk, offset);
         case OP_RETURN:
             return simpleInstruction("OP_RETURN", offset);
         default:
@@ -36,7 +41,19 @@ int disassembleInstruction(Chunk& chunk, int offset) {
     }
 }
 
+void printValue(Value value) {
+    std::cout << value ;
+}
+
+static int constantInstruction(const char* name, const Chunk& chunk, int offset) {
+    uint8_t constant = chunk.code[offset + 1];
+    printf("%-16s %4d '", name, constant);
+    printValue(chunk.constants[constant]);
+    std::cout << "'" << std::endl ;
+    return offset + 2;
+}
+
 static int simpleInstruction(const char* name, int offset) {
-  std::cout << name << std::endl ;
-  return offset + 1;
+    std::cout << name << std::endl ;
+    return offset + 1;
 }
