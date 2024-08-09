@@ -12,4 +12,6 @@ void printValue(Value value);
 
 static int simpleInstruction(const char* name, int offset) ;
 
+static int longConstantInstruction(const char* name, const Chunk& chunk, int offset) ;
+
 static int constantInstruction(const char* name, const Chunk& chunk, int offset);

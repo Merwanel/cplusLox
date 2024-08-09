@@ -37,18 +37,14 @@ void printChunk(const Chunk &chunk) {
 }
 int main(int argc, char const *argv[]) {
     Chunk chunk;
-    uint8_t constant = addConstant(chunk, 1.2) ;
-    writeChunk(chunk, OP_CONSTANT, 123);
-    writeChunk(chunk, constant, 123);
-
-    constant = addConstant(chunk, 65.7) ;
-    writeChunk(chunk, OP_CONSTANT, 123);
-    writeChunk(chunk, constant, 123);
-
-    writeChunk(chunk, OP_RETURN, 124);
-    printChunk(chunk);
-
+    
+    for(int i = 0 ; i < 263 ; i++) {
+        writeConstant(chunk, i, i);
+    }
+    
     disassembleChunk(chunk, "test chunk");
+    // printChunk(chunk);
+
     
     return 0;
 }

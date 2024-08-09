@@ -9,7 +9,8 @@
 #include "./value.hpp" 
 
 typedef enum {
-    OP_CONSTANT, // 1 operand
+    OP_CONSTANT, // 1 operand => good until the ValueArray grow more than 2**8=256  
+    OP_CONSTANT_LONG, // 3 operands =>  ValueArray can go up to 2**24=a few millions
     OP_RETURN, // 0 operand
 } OpCode; // operation codes
 

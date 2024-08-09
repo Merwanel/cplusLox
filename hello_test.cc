@@ -10,13 +10,8 @@ TEST(Disassembler, op) {
 
     Chunk chunk;
 
-    uint8_t constant = addConstant(chunk, 1.2) ;
-    writeChunk(chunk, OP_CONSTANT, 123);
-    writeChunk(chunk, constant, 123);
-
-    constant = addConstant(chunk, 65.7) ;
-    writeChunk(chunk, OP_CONSTANT, 123);
-    writeChunk(chunk, constant, 123);
+    writeConstant(chunk, 1.2, 123);
+    writeConstant(chunk, 65.7, 1234);
     
     writeChunk(chunk, OP_RETURN, 1234);
 
@@ -28,4 +23,21 @@ TEST(Disassembler, op) {
                             "0002    | OP_CONSTANT         1 '65.7'\n"
                             "0004 1234 OP_RETURN\n";
     EXPECT_EQ(output, expected);
+}
+TEST(Disassembler, op_constant_long) {
+    testing::internal::CaptureStdout();
+
+    Chunk chunk;
+    for(int i = 0 ; i < 263 ; i++) {
+        writeConstant(chunk, i, i);
+    }
+    disassembleChunk(chunk, "test chunk");
+    
+    std::string output = testing::internal::GetCapturedStdout();
+    int start_last_line = output.size()-1 ;
+    while (output[--start_last_line] != '\n') ;
+    std::string last_line = output.substr(start_last_line+1);
+
+    std::string expected = "0536    | OP_CONSTANT_LONG  262 '262'\n";
+    EXPECT_EQ(last_line, expected);
 }
