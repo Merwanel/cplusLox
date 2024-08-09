@@ -9,8 +9,8 @@
 #include "./value.hpp" 
 
 typedef enum {
-    OP_CONSTANT,
-    OP_RETURN,
+    OP_CONSTANT, // 1 operand
+    OP_RETURN, // 0 operand
 } OpCode; // operation codes
 
 
@@ -20,7 +20,7 @@ typedef struct {
 } LineArray ;
 
 typedef struct {
-    std::vector<uint8_t> code;
+    std::vector<uint8_t> code; // Opcode followed or not by a number of operand
     std::vector<LineArray> lines;
     ValueArray constants;
 } Chunk;
