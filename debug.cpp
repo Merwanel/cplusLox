@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "./debug.hpp"
+#include "./chunk.cpp"
 
 /** 
  * capture only std::cout, not printf
@@ -20,14 +21,21 @@ void disassembleChunk(const Chunk& chunk, const char* name) {
     std::cout << "== " << name << " ==" << std::endl;
 
     for (int offset = 0; offset < chunk.code.size();) {
-        // offset is incremented by disassembleInstruction() because instructions can have different sizes.
+        // offset is incremented by disassembleInstruction() 
+        // because instructions can have different sizes 
+        // (1 opcode and between 0 and many operands ).
         offset = disassembleInstruction(chunk, offset);
     }
 }
   
 int disassembleInstruction(const Chunk& chunk, int offset) {
-    // std::cout <<  std::setfill('0') << std::setw(4) << offset << " " ;
-    printf("%04d", offset);
+    printf("%04d ", offset);
+    if (offset > 0 &&
+        getline(chunk, offset) == getline(chunk, offset-1)) {
+        printf("   | ");
+    } else {
+        printf("%4d ", getline(chunk, offset));
+    }
 
     uint8_t instruction = chunk.code[offset];
     switch (instruction) {

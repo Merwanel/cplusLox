@@ -1,7 +1,7 @@
 #include <vector>
 
-#ifndef VALUE_H
-#define VALUE_H
+#ifndef VALUE_HPP
+#define VALUE_HPP
 
 typedef double Value;
 
