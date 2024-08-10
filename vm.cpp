@@ -1,9 +1,7 @@
 #include "./vm.hpp"
 #include "./debug.cpp"
 
-InterpretResult interpret(VM& vm, const Chunk& chunk) {
-    // vm.chunk = chunk;
-    // vm.ip = chunk.code.begin();
+InterpretResult interpret(VM& vm) {
     return run(vm) ;
 }
 

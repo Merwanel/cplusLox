@@ -7,7 +7,7 @@
 #include <memory>
 
 typedef struct {
-    Chunk& chunk;
+    const Chunk& chunk;
     std::vector<uint8_t>::const_iterator ip ;  //  instruction pointer, points to the next instruction
 } VM;
 
@@ -21,7 +21,7 @@ void initVM();
 
 void freeVM();
 
-InterpretResult interpret(VM& vm, const Chunk& chunk);
+InterpretResult interpret(VM& vm);
 
 static InterpretResult run(VM& vm) ;
 
