@@ -1,3 +1,6 @@
+#ifndef DEBUG_H
+#define DEBUG_H
+
 #include <stdio.h>
 #include <string>
 #include <iomanip>
@@ -77,3 +80,5 @@ static int simpleInstruction(const char* name, int offset) {
     std::cout << name << std::endl ;
     return offset + 1;
 }
+
+#endif

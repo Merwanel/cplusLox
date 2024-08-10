@@ -13,6 +13,7 @@
 
 #include "./chunk.cpp"
 #include "./debug.cpp"
+#include "./vm.cpp"
 
 void printChunk(const Chunk &chunk) {
 
@@ -38,12 +39,15 @@ void printChunk(const Chunk &chunk) {
 int main(int argc, char const *argv[]) {
     Chunk chunk;
     
-    for(int i = 0 ; i < 263 ; i++) {
+    for(int i = 0 ; i < 4 ; i++) {
         writeConstant(chunk, i, i);
     }
     
     disassembleChunk(chunk, "test chunk");
     // printChunk(chunk);
+    VM vm = {chunk, chunk.code.begin()};
+    interpret(vm, chunk);
+
 
     
     return 0;
