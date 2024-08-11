@@ -45,10 +45,8 @@ int main(int argc, char const *argv[]) {
     
     disassembleChunk(chunk, "test chunk");
     // printChunk(chunk);
-    VM vm = {chunk, chunk.code.cbegin()};
-    interpret(vm);
-
-
-    
+    VM vm ;
+    interpret(vm, chunk);
+   
     return 0;
 }

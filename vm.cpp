@@ -1,7 +1,10 @@
 #include "./vm.hpp"
 #include "./debug.cpp"
 
-InterpretResult interpret(VM& vm) {
+#include "./common.hpp"
+
+InterpretResult interpret(VM& vm, const Chunk& chunk) {
+    vm = {&chunk, chunk.code.cbegin()};
     return run(vm) ;
 }
 
@@ -10,11 +13,17 @@ InterpretResult interpret(VM& vm) {
 /// @param vm 
 /// @return InterpretResult
 static InterpretResult run(VM& vm) {
-#define READ_BYTE() (*vm.ip++)
-#define READ_CONSTANT() (vm.chunk.constants[READ_BYTE()])
-#define READ_CONSTANT_LONG() (vm.chunk.constants[(uint32_t)(READ_BYTE() | (READ_BYTE() << 8) | (READ_BYTE() << 16))])
+    
+    const Chunk& chunk = *vm.chunk;
+    #define READ_BYTE() (*vm.ip++)
+    #define READ_CONSTANT() (chunk.constants[READ_BYTE()])
+    #define READ_CONSTANT_LONG() (chunk.constants[(uint32_t)(READ_BYTE() | (READ_BYTE() << 8) | (READ_BYTE() << 16))])
 
-    while (vm.ip != vm.chunk.code.end()) {
+    while (vm.ip != chunk.code.end()) {
+        #ifdef DEBUG_TRACE_EXECUTION
+            disassembleInstruction(chunk, std::distance(chunk.code.begin(), vm.ip)) ;
+        #endif
+
         uint8_t instruction;
         switch (instruction = READ_BYTE()) {
             case OP_CONSTANT: {

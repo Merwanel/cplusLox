@@ -7,8 +7,11 @@
 #include <memory>
 
 typedef struct {
-    const Chunk& chunk;
+    const Chunk* chunk;
     std::vector<uint8_t>::const_iterator ip ;  //  instruction pointer, points to the next instruction
+    std::vector<Value> stack;
+    std::vector<Value>::iterator stackTop;
+
 } VM;
 
 typedef enum {
