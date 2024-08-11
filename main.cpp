@@ -40,13 +40,14 @@ int main(int argc, char const *argv[]) {
     Chunk chunk;
     
     for(int i = 0 ; i < 4 ; i++) {
-        writeConstant(chunk, i, i);
+        writeConstant(chunk, i+3, i);
     }
+    writeChunk(chunk, OP_RETURN, 400);
     
     disassembleChunk(chunk, "test chunk");
     // printChunk(chunk);
-    VM vm ;
-    interpret(vm, chunk);
+    VM vm = initVM(chunk);
+    interpret(vm);
    
     return 0;
 }

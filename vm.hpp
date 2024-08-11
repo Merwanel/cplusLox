@@ -2,16 +2,18 @@
 #define VM_H
 
 #include <vector>
+#include <array>
 
 #include "./chunk.hpp"
 #include <memory>
 
+#define STACK_MAX 256
+
 typedef struct {
     const Chunk* chunk;
-    std::vector<uint8_t>::const_iterator ip ;  //  instruction pointer, points to the next instruction
+    int ip ;  //  instruction pointer, points to the next instruction
     std::vector<Value> stack;
-    std::vector<Value>::iterator stackTop;
-
+    int stackTop;
 } VM;
 
 typedef enum {
@@ -20,12 +22,16 @@ typedef enum {
     INTERPRET_RUNTIME_ERROR
 } InterpretResult;
 
-void initVM();
+VM initVM(const Chunk& chunk);
 
-void freeVM();
+void freeVM(VM& vm);
 
 InterpretResult interpret(VM& vm);
 
 static InterpretResult run(VM& vm) ;
+
+void push(VM& vm, Value value) ;
+
+Value pop(VM& vm) ;
 
 #endif
