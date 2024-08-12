@@ -11,9 +11,12 @@
 #include <sstream>
 #include <algorithm>
 
+#include "./common.hpp"
+
 #include "./chunk.cpp"
 #include "./debug.cpp"
 #include "./vm.cpp"
+
 
 void printChunk(const Chunk &chunk) {
 
@@ -38,14 +41,19 @@ void printChunk(const Chunk &chunk) {
 }
 int main(int argc, char const *argv[]) {
     Chunk chunk;
+    writeConstant(chunk, 1, 1);
+    writeConstant(chunk, 2, 1);
+    writeChunk(chunk, OP_ADD, 1);
+    writeConstant(chunk, 3, 2);
+    writeChunk(chunk, OP_MULTIPLY, 2);
+    writeConstant(chunk, 4, 3);
+    writeChunk(chunk, OP_SUBTRACT, 3);
+    writeConstant(chunk, 5, 3);
+    writeChunk(chunk, OP_DIVIDE, 4);
     
-    for(int i = 0 ; i < 4 ; i++) {
-        writeConstant(chunk, i+3, i);
-    }
-    writeChunk(chunk, OP_RETURN, 400);
+    writeChunk(chunk, OP_RETURN, 1234);
     
     disassembleChunk(chunk, "test chunk");
-    // printChunk(chunk);
     VM vm = initVM(chunk);
     interpret(vm);
    

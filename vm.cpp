@@ -1,14 +1,12 @@
 #include "./vm.hpp"
 #include "./debug.cpp"
 
-#include "./common.hpp"
-
 InterpretResult interpret(VM& vm) {
     return run(vm) ;
 }
 
 VM initVM(const Chunk& chunk) {
-    VM vm {&chunk, 0, std::vector<Value> (STACK_MAX), 0};
+    VM vm {&chunk, 0, std::vector<Value>(STACK_MAX), 0};
     return vm;
 }
 
@@ -18,6 +16,9 @@ void resetStack(VM& vm) {
 
 
 void push(VM& vm, Value value) {
+    if (vm.stackTop == vm.stack.size()) {
+        vm.stack.resize(vm.stack.size() * 2);
+    }
     vm.stack[vm.stackTop++] = value;;
 }
 
@@ -30,14 +31,17 @@ Value pop(VM& vm) {
 /// @return InterpretResult
 static InterpretResult run(VM& vm) {
     // resetStack(vm); 
-    std::array<int, 3> a{1,2,3};
-
-std::array arr = { 1, 2, 3 };
 
     const Chunk& chunk = *vm.chunk;
     #define READ_BYTE() (chunk.code[vm.ip++])
     #define READ_CONSTANT() (chunk.constants[READ_BYTE()])
     #define READ_CONSTANT_LONG() (chunk.constants[(uint32_t)(READ_BYTE() | (READ_BYTE() << 8) | (READ_BYTE() << 16))])
+    #define BINARY_OP(op) \
+        do { \
+        double b = pop(vm); \
+        double a = pop(vm); \
+        push(vm, a op b); \
+        } while (false) // trick to put several statement in a macro
 
     while (vm.ip != chunk.code.size()) {
         #ifdef DEBUG_TRACE_EXECUTION
@@ -51,8 +55,7 @@ std::array arr = { 1, 2, 3 };
             disassembleInstruction(chunk, vm.ip) ;
         #endif
 
-        uint8_t instruction;
-        switch (instruction = READ_BYTE()) {
+        switch (uint8_t instruction = READ_BYTE()) {
             case OP_CONSTANT: {
                 Value constant = READ_CONSTANT();
                 push(vm, constant);
@@ -63,6 +66,14 @@ std::array arr = { 1, 2, 3 };
                 push(vm, constant);
                 break;
             }
+            case OP_NEGATE:   {
+                push(vm, -pop(vm));  // TODO negate direclty number => measure performance
+                break;
+            }
+            case OP_ADD:      BINARY_OP(+); break;
+            case OP_SUBTRACT: BINARY_OP(-); break;
+            case OP_MULTIPLY: BINARY_OP(*); break;
+            case OP_DIVIDE:   BINARY_OP(/); break;
             case OP_RETURN: {
                 printValue(pop(vm));
                 printf("\n");
@@ -73,5 +84,7 @@ std::array arr = { 1, 2, 3 };
 
     #undef READ_BYTE
     #undef READ_CONSTANT
+    #undef READ_CONSTANT_LONG
+    #undef BINARY_OP
     return INTERPRET_RUNTIME_ERROR;
 }
