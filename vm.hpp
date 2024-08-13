@@ -26,7 +26,7 @@ VM initVM(const Chunk& chunk);
 
 void freeVM(VM& vm);
 
-InterpretResult interpret(VM& vm);
+InterpretResult interpret(VM& vm, std::string source);
 
 static InterpretResult run(VM& vm) ;
 

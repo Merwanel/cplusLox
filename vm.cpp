@@ -1,7 +1,11 @@
 #include "./vm.hpp"
 #include "./debug.cpp"
+#include "./compiler.cpp"
 
-InterpretResult interpret(VM& vm) {
+
+InterpretResult interpret(VM& vm, std::string source) {
+    compile(source);
+    return INTERPRET_OK;
     return run(vm) ;
 }
 

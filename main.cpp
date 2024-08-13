@@ -39,23 +39,51 @@ void printChunk(const Chunk &chunk) {
     }
     std::cout << std::endl;
 }
+
+void repl(VM& vm) {
+    std::string line;
+
+    for (;;) {
+        std::cout << "> " ;
+        if (!std::getline (std::cin, line)) {
+            std::cout << std::endl;
+            break;
+        }
+        std::cout << line << std::endl;
+        interpret(vm, line);
+    }
+}
+
+static std::string readFile(const std::string path) {
+    std::ifstream t(path);
+    if (t.fail()) {
+        throw std::runtime_error("File '" + path + "' does not exist or is not openable") ;
+    }
+    std::stringstream buffer;
+    buffer << t.rdbuf();
+    std::cout <<  buffer.str() << std::endl ; 
+    return buffer.str();
+}
+
+void runFile(VM& vm, std::string path) {
+    std::string source = readFile(path);
+    InterpretResult result = interpret(vm, source);
+
+    if (result == INTERPRET_COMPILE_ERROR) exit(65);
+    if (result == INTERPRET_RUNTIME_ERROR) exit(70);
+}
+
 int main(int argc, char const *argv[]) {
     Chunk chunk;
-    writeConstant(chunk, 1, 1);
-    writeConstant(chunk, 2, 1);
-    writeChunk(chunk, OP_ADD, 1);
-    writeConstant(chunk, 3, 2);
-    writeChunk(chunk, OP_MULTIPLY, 2);
-    writeConstant(chunk, 4, 3);
-    writeChunk(chunk, OP_SUBTRACT, 3);
-    writeConstant(chunk, 5, 3);
-    writeChunk(chunk, OP_DIVIDE, 4);
-    
-    writeChunk(chunk, OP_RETURN, 1234);
-    
-    disassembleChunk(chunk, "test chunk");
     VM vm = initVM(chunk);
-    interpret(vm);
-   
+    if (argc == 1) {
+        repl(vm);
+    } else if (argc == 2) {
+        runFile(vm, (std::string)argv[1]);
+    } else {
+        std::cerr << "Usage: clox [path]\n" << std::endl ;
+        exit(64);
+    }
+    
     return 0;
 }
