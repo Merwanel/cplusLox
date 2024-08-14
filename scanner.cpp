@@ -88,13 +88,11 @@ class Scanner {
 
         return makeToken(TOKEN_NUMBER);
     }
-    TokenType checkKeyword(int startToken, int lengthToken,
-        const std::string rest, TokenType type) {
-        if (current - start == start + lengthToken &&
+    TokenType checkKeyword(int startToken, int lengthToken, const std::string rest, TokenType type) {       
+        if (current - start == startToken + lengthToken &&
             source.compare(start + startToken, lengthToken, rest) == 0) {
             return type;
         }
-
         return TOKEN_IDENTIFIER;
     }
     
@@ -106,7 +104,7 @@ class Scanner {
             case 'e': return checkKeyword(1, 3, "lse", TOKEN_ELSE);
             case 'f':
                 if (current - start > 1) {
-                    switch (source[start]) {
+                    switch (source[start+1]) {
                         case 'a': return checkKeyword(2, 3, "lse", TOKEN_FALSE);
                         case 'o': return checkKeyword(2, 1, "r", TOKEN_FOR);
                         case 'u': return checkKeyword(2, 1, "n", TOKEN_FUN);
@@ -121,7 +119,7 @@ class Scanner {
             case 's': return checkKeyword(1, 4, "uper", TOKEN_SUPER);
             case 't':
                 if (current - start > 1) {
-                    switch (source[start]) {
+                    switch (source[start+1]) {
                         case 'h': return checkKeyword(2, 2, "is", TOKEN_THIS);
                         case 'r': return checkKeyword(2, 2, "ue", TOKEN_TRUE);
                     }
@@ -132,6 +130,7 @@ class Scanner {
         }
         return TOKEN_IDENTIFIER;
     }
+
     Token identifier() {
         while (isAlpha(peek()) || isdigit(peek())) advance();
         

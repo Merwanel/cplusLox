@@ -85,14 +85,40 @@ TEST(Scanner, print) {
         if (tokens.back().type == TOKEN_EOF) break;
     }
     std::string output = TokensToStr(source, tokens);
-    
+
     std::vector<Token> expectedTokens{
-        {TOKEN_IDENTIFIER, 0, 5, 1},
+        {TOKEN_PRINT, 0, 5, 1},
         {TOKEN_NUMBER, 6, 1, 1},
         {TOKEN_PLUS, 8, 1, 1},
         {TOKEN_NUMBER, 10, 1, 1},
         {TOKEN_SEMICOLON, 11, 1, 1},
         {TOKEN_EOF, 12, 0, 1},
+    };
+    std::string expected_str = TokensToStr(source, expectedTokens);
+    EXPECT_EQ(output, expected_str);
+}
+TEST(Scanner, fun) {
+    std::string source = "var a = 9 ;\n"
+                        "fun sayHi(first, last) {\n"
+                            "print \"Hi, \" + first + \" \" + last + \"!\";\n"
+                            "print 5 + 8 + a ;\n"
+                        "}\n"
+                        "sayHi(\"Dear\", \"Reader\");";
+    Scanner scanner(source);
+    std::vector<Token> tokens;
+    for (;;) {
+        tokens.push_back(scanner.scanToken());
+        if (tokens.back().type == TOKEN_EOF) break;
+    }
+    std::string output = TokensToStr(source, tokens);
+
+    std::vector<Token> expectedTokens{
+        // {TOKEN_IDENTIFIER, 0, 5, 1},
+        // {TOKEN_NUMBER, 6, 1, 1},
+        // {TOKEN_PLUS, 8, 1, 1},
+        // {TOKEN_NUMBER, 10, 1, 1},
+        // {TOKEN_SEMICOLON, 11, 1, 1},
+        // {TOKEN_EOF, 12, 0, 1},
     };
     std::string expected_str = TokensToStr(source, expectedTokens);
     EXPECT_EQ(output, expected_str);
