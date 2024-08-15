@@ -65,8 +65,12 @@ static std::string readFile(const std::string path) {
     return buffer.str();
 }
 
-void runFile(VM& vm, std::string path) {
+void runFile(VM& vm, const std::string path, const bool print_scanner) {
     std::string source = readFile(path);
+    if (print_scanner) {
+        print_tokens(source);
+        return;
+    }
     InterpretResult result = interpret(vm, source);
 
     if (result == INTERPRET_COMPILE_ERROR) exit(65);
@@ -79,9 +83,11 @@ int main(int argc, char const *argv[]) {
     if (argc == 1) {
         repl(vm);
     } else if (argc == 2) {
-        runFile(vm, (std::string)argv[1]);
+        runFile(vm, (std::string)argv[1], false);
+    } else if (argc == 3 && (std::string)argv[2] == "-tokens") {
+        runFile(vm, (std::string)argv[1], true);
     } else {
-        std::cerr << "Usage: clox [path]\n" << std::endl ;
+        std::cerr << "Usage: clox [path] \n\t-tokens : only print the tokens" << std::endl ;
         exit(64);
     }
     

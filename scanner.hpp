@@ -1,3 +1,6 @@
+#ifndef SCANNER_HPP
+#define SCANNER_HPP
+
 #include <string>
 
 // typedef struct {
@@ -36,3 +39,5 @@ typedef struct {
   int line;
   std::string str="";
 } Token;
+
+#endif

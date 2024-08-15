@@ -1,3 +1,6 @@
+#ifndef SCANNER_CPP
+#define SCANNER_CPP
+
 #include <string>
 #include "./scanner.hpp"
 
@@ -175,3 +178,5 @@ class Scanner {
         return errorToken("Unexpected character.");
     }
 };
+
+#endif
