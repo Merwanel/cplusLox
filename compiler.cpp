@@ -18,15 +18,16 @@ void compile(const std::string source) {
     int line = -1;
     for (;;) {
         Token token = scanner.scanToken();
+        std::string type = get_token_type_str(token.type);
         if (token.line != line) {
             printf("%4d ", token.line);
             line = token.line;
         } else {
             printf("   | ");
         }
-        std::string type = get_token_type_str(token.type);
         std::cout << std::setw(25) << std::left << type ;
         std::cout << "'" << scanner.source.substr(token.start, token.length)  <<  "'\t" << token.start << " "<< token.length <<  std::endl ;
+        // std::cout << "{" << type << "," << token.start << "," << token.length << "," << token.line <<"} ," << std::endl ;
         if (token.type == TOKEN_EOF) break;
     }
 }

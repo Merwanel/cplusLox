@@ -98,12 +98,13 @@ TEST(Scanner, print) {
     EXPECT_EQ(output, expected_str);
 }
 TEST(Scanner, fun) {
-    std::string source = "var a = 9 ;\n"
-                        "fun sayHi(first, last) {\n"
-                            "print \"Hi, \" + first + \" \" + last + \"!\";\n"
-                            "print 5 + 8 + a ;\n"
-                        "}\n"
-                        "sayHi(\"Dear\", \"Reader\");";
+    std::string source = R"x(var a = 9 ;)x""\r\n"
+                        R"x(fun sayHi(first, last) {)x""\r\n"
+                        R"x(    print "Hi, " + first + " " + last + "!";)x""\r\n"
+                        R"x(    print 5 + 8 + a ;)x""\r\n"
+                        "}\r\n"
+                        "\r\n"
+                        R"x(sayHi("Dear", "Reader");)x";
     Scanner scanner(source);
     std::vector<Token> tokens;
     for (;;) {
@@ -113,12 +114,79 @@ TEST(Scanner, fun) {
     std::string output = TokensToStr(source, tokens);
 
     std::vector<Token> expectedTokens{
-        // {TOKEN_IDENTIFIER, 0, 5, 1},
-        // {TOKEN_NUMBER, 6, 1, 1},
-        // {TOKEN_PLUS, 8, 1, 1},
-        // {TOKEN_NUMBER, 10, 1, 1},
-        // {TOKEN_SEMICOLON, 11, 1, 1},
-        // {TOKEN_EOF, 12, 0, 1},
+        {TOKEN_VAR,0,3,1} ,
+            {TOKEN_IDENTIFIER,4,1,1} ,
+            {TOKEN_EQUAL_EQUAL,6,2,1} ,
+            {TOKEN_NUMBER,8,1,1} ,
+            {TOKEN_SEMICOLON,10,1,1} ,
+            {TOKEN_FUN,13,3,2} ,
+            {TOKEN_IDENTIFIER,17,5,2} ,
+            {TOKEN_LEFT_PAREN,22,1,2} ,
+            {TOKEN_IDENTIFIER,23,5,2} ,
+            {TOKEN_COMMA,28,1,2} ,
+            {TOKEN_IDENTIFIER,30,4,2} ,
+            {TOKEN_RIGHT_PAREN,34,1,2} ,
+            {TOKEN_LEFT_BRACE,36,1,2} ,
+            {TOKEN_PRINT,43,5,3} ,
+            {TOKEN_STRING,49,6,3} ,
+            {TOKEN_PLUS,56,1,3} ,
+            {TOKEN_IDENTIFIER,58,5,3} ,
+            {TOKEN_PLUS,64,1,3} ,
+            {TOKEN_STRING,66,3,3} ,
+            {TOKEN_PLUS,70,1,3} ,
+            {TOKEN_IDENTIFIER,72,4,3} ,
+            {TOKEN_PLUS,77,1,3} ,
+            {TOKEN_STRING,79,3,3} ,
+            {TOKEN_SEMICOLON,82,1,3} ,
+            {TOKEN_PRINT,89,5,4} ,
+            {TOKEN_NUMBER,95,1,4} ,
+            {TOKEN_PLUS,97,1,4} ,
+            {TOKEN_NUMBER,99,1,4} ,
+            {TOKEN_PLUS,101,1,4} ,
+            {TOKEN_IDENTIFIER,103,1,4} ,
+            {TOKEN_SEMICOLON,105,1,4} ,
+            {TOKEN_RIGHT_BRACE,108,1,5} ,
+            {TOKEN_IDENTIFIER,113,5,7} ,
+            {TOKEN_LEFT_PAREN,118,1,7} ,
+            {TOKEN_STRING,119,6,7} ,
+            {TOKEN_COMMA,125,1,7} ,
+            {TOKEN_STRING,127,8,7} ,
+            {TOKEN_RIGHT_PAREN,135,1,7} ,
+            {TOKEN_SEMICOLON,136,1,7} ,
+            {TOKEN_EOF,137,0,7} ,
+    };
+    std::string expected_str = TokensToStr(source, expectedTokens);
+    EXPECT_EQ(output, expected_str);
+}
+TEST(Scanner, reserved_keywords) {
+    std::string source = "and class else false for fun if nil or\r\n"
+                        "print return super this true var while";
+    Scanner scanner(source);
+    std::vector<Token> tokens;
+    for (;;) {
+        tokens.push_back(scanner.scanToken());
+        if (tokens.back().type == TOKEN_EOF) break;
+    }
+    std::string output = TokensToStr(source, tokens);
+
+    std::vector<Token> expectedTokens{
+        {TOKEN_AND,0,3,1} ,
+        {TOKEN_CLASS,4,5,1} ,
+        {TOKEN_ELSE,10,4,1} ,
+        {TOKEN_FALSE,15,5,1} ,
+        {TOKEN_FOR,21,3,1} ,
+        {TOKEN_FUN,25,3,1} ,
+        {TOKEN_IF,29,2,1} ,
+        {TOKEN_NIL,32,3,1} ,
+        {TOKEN_OR,36,2,1} ,
+        {TOKEN_PRINT,40,5,2} ,
+        {TOKEN_RETURN,46,6,2} ,
+        {TOKEN_SUPER,53,5,2} ,
+        {TOKEN_THIS,59,4,2} ,
+        {TOKEN_TRUE,64,4,2} ,
+        {TOKEN_VAR,69,3,2} ,
+        {TOKEN_WHILE,73,5,2} ,
+        {TOKEN_EOF,78,0,2} ,
     };
     std::string expected_str = TokensToStr(source, expectedTokens);
     EXPECT_EQ(output, expected_str);
