@@ -3,10 +3,16 @@
 #include "./compiler.cpp"
 
 
-InterpretResult interpret(VM& vm, std::string source) {
-    compile(source);
-    return INTERPRET_OK;
-    return run(vm) ;
+InterpretResult interpret(VM& vm, const std::string& source) {
+    Chunk chunk;
+    Compiler compiler(source, chunk) ;
+    if (!compiler.compile(source, chunk)) {
+        return INTERPRET_COMPILE_ERROR;
+    }
+    vm.chunk = &chunk;
+    InterpretResult result = run(vm);
+
+    return result;
 }
 
 VM initVM(const Chunk& chunk) {

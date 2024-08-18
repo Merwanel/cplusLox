@@ -78,8 +78,7 @@ void runFile(VM& vm, const std::string path, const bool print_scanner) {
 }
 
 int main(int argc, char const *argv[]) {
-    Chunk chunk;
-    VM vm = initVM(chunk);
+    VM vm;
     if (argc == 1) {
         repl(vm);
     } else if (argc == 2) {

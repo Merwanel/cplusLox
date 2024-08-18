@@ -41,6 +41,8 @@ int addConstant(Chunk& chunk, Value value)  ;
 
 void writeChunk(Chunk& chunk, const uint8_t byte, const int line) ;
 
+void writeConstant(Chunk& chunk, Value value, int line);
+
 int getline(const Chunk& chunk, const uint8_t instruction) ;
 
 #endif
