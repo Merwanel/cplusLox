@@ -3,6 +3,7 @@
 
 #include <string>
 #include "./scanner.hpp"
+#include <iostream>
 
 class Scanner {
     public:
@@ -145,7 +146,6 @@ class Scanner {
     Token scanToken() {
         skipWhitespace();
         start = current;
-
         if (isAtEnd()) return makeToken(TOKEN_EOF);
         char c = advance();
         if (isAlpha(c)) return identifier() ;

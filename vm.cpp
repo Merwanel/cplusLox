@@ -6,7 +6,8 @@
 InterpretResult interpret(VM& vm, const std::string& source) {
     Chunk chunk;
     Compiler compiler(source, chunk) ;
-    if (!compiler.compile(source, chunk)) {
+
+    if (!compiler.compile()) {
         return INTERPRET_COMPILE_ERROR;
     }
     vm.chunk = &chunk;
