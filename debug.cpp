@@ -10,6 +10,26 @@
 #include "./chunk.cpp"
 #include "./scanner.cpp"
 
+#include <chrono>
+namespace Foo{
+    using namespace std::chrono ;
+    class Timer {
+        time_point<high_resolution_clock> startTimePoint;
+    public:
+        Timer() {
+            startTimePoint = high_resolution_clock::now() ;
+        }
+        ~Timer() {
+            auto end = time_point_cast<microseconds>(high_resolution_clock::now()).time_since_epoch().count() ;
+            auto start = time_point_cast<microseconds>(startTimePoint).time_since_epoch().count() ;
+            auto us = end - start;
+            auto ms = us * .001; 
+            auto s = ms * .001; 
+            std::cout << us << " us (" << ms << " ms) (" << s << " s)" << std::endl;
+        }
+    };
+};
+using Foo::Timer;
 
 /** 
  * capture only std::cout, not printf
